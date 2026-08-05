@@ -1,0 +1,50 @@
+= Configure Feature Flag
+
+Set the configuration state of a Feature Flag by posting an arbitrary payload to the configstate endpoint.
+
+NOTE: This is a low-level action intended to be called by other actions in this repo. For typical use cases prefer link:../enable[enable] or link:../disable[disable].
+
+== Inputs
+
+[cols="2a,2a,2a,5a",options="header"]
+.Input details
+|===
+
+| Input name
+| Data type
+| Required?
+| Description
+
+| `api_token`
+| String
+| No
+| The Unify API token used to make the configuration change. If not defined, the action will use a secret named `FEATURE_FLAG_ACTIONS_API_TOKEN` or will error.
+
+| `app_id`
+| String
+| Yes
+| The Unify application ID with which the Feature Flag is associated.
+
+| `flag_id`
+| String
+| Yes
+| The Feature Flag UUID.
+
+| `env_id`
+| String
+| Yes
+| The Unify environment ID in which the Feature Flag is to be configured.
+
+| `payload`
+| String
+| Yes
+| The JSON payload to POST to the configstate endpoint e.g. `{"enabled":true}`.
+
+|===
+
+See link:https://github.com/cloudbees-io/feature-flag-actions/tree/main#common-action-inputs[Common Action Inputs] for more details on the `api_token`, `app_id`, `flag_id`, and `env_id` inputs.
+
+== See Also
+
+* link:../enable[enable] — Enable a Feature Flag in a specific environment
+* link:../disable[disable] — Disable a Feature Flag in a specific environment
