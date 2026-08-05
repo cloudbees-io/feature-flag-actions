@@ -1,5 +1,7 @@
 = Enable Feature Flag
 
+Enable a Feature Flag in a specific environment
+
 == Inputs
 
 [cols="2a,2a,2a,5a",options="header"]

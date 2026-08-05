@@ -10,7 +10,7 @@
 | Description
 
 | link:./enable[enable]
-| Enable a Feature Flag
+| Enable a Feature Flag in a specific environment
 
 |===
 
