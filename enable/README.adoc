@@ -21,15 +21,15 @@
 | Yes
 | The Unify application ID with which the Feature Flag is associated.
 
-| `env_id`
-| String
-| Yes
-| The Unify environment ID in which the Feature Flag is to be enabled/disabled.
-
 | `flag_id`
 | String
 | Yes
 | The Feature Flag UUID.
+
+| `env_id`
+| String
+| Yes
+| The Unify environment ID in which the Feature Flag is to be enabled/disabled.
 
 |===
 
