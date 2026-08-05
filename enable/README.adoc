@@ -39,4 +39,22 @@ See link:https://github.com/cloudbees-io/feature-flag-actions/tree/main#common-a
 
 == Usage
 
-TODO ...
+[source,yaml]
+----
+jobs:
+  build:
+    steps:
+
+      # Previous steps decide if the flag should be enabled
+
+      - id: enable-campaign-subscribe-button-flag
+        name: Enable Campaign Subscribe button Feature Flag
+        if: ${{ <condition> == 'true' }}
+        uses: cloudbees-io/feature-flag-actions/enable@v1
+        with:
+          app_id: "f5e23d42-5c3c-467d-91d7-b07158822589"
+          flag_id: "a5f246e5-7c7f-4c2a-9fe0-e05538b3d640"
+          env_id: "5be99972-9f87-4093-8189-c0c0a31dc571"
+----
+
+Again, see link:https://github.com/cloudbees-io/feature-flag-actions/tree/main#common-action-inputs[Common Action Inputs] for more details on how to get the right values for the action inputs.
