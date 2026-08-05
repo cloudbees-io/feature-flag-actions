@@ -39,6 +39,8 @@ See link:https://github.com/cloudbees-io/feature-flag-actions/tree/main#common-a
 
 == Usage
 
+The example below assumes the API token has been stored as a shared secret named `FEATURE_FLAG_ACTIONS_API_TOKEN`, so the `api_token` input is omitted.
+
 [source,yaml]
 ----
 jobs:
