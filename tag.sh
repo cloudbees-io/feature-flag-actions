@@ -16,6 +16,11 @@ if git ls-remote --tags "$REMOTE" | grep -q "refs/tags/${FULL_TAG}$"; then
   exit 1
 fi
 
+if git tag -l "$FULL_TAG" | grep -q "$FULL_TAG"; then
+  echo "Removing local tag ${FULL_TAG}..."
+  git tag -d "$FULL_TAG"
+fi
+
 echo "Creating and pushing ${FULL_TAG}..."
 git tag -s "$FULL_TAG" -m "$FULL_TAG"
 git push "$REMOTE" "$FULL_TAG"
