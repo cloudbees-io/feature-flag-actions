@@ -12,6 +12,9 @@
 | link:./enable[enable]
 | Enable a Feature Flag in a specific environment
 
+| link:./disable[disable]
+| Disable a Feature Flag in a specific environment
+
 |===
 
 == Common Action Inputs
