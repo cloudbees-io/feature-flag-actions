@@ -23,32 +23,11 @@ runs:
   steps:
     - id: enable-flag
       name: Enable Feature Flag
-      uses: docker://alpine:3
-      env:
-        INPUT_API_TOKEN: ${{ inputs.api_token }}
-        SHARED_API_TOKEN: ${{ secrets.FEATURE_FLAG_ACTIONS_API_TOKEN }}
-        APP_ID: ${{ inputs.app_id }}
-        ENV_ID: ${{ inputs.env_id }}
-        FLAG_ID: ${{ inputs.flag_id }}
-      run: |
-        set -eu
-        apk add --no-cache curl jq >/dev/null 2>&1
-
-        RESOLVED_TOKEN="${INPUT_API_TOKEN:-${SHARED_API_TOKEN:-}}"
-        if [ -z "$RESOLVED_TOKEN" ]; then
-          echo "Error: api_token input or \"FEATURE_FLAG_ACTIONS_API_TOKEN\" secret must be set" >&2
-          exit 1
-        fi
-
-        RESPONSE=$(curl -s -X POST \
-          -H "Authorization: Bearer ${RESOLVED_TOKEN}" \
-          -H "Content-Type: application/json" \
-          -d '{"enabled":true}' \
-          "https://api.cloudbees.io/v1/applications/${APP_ID}/flags/${FLAG_ID}/configuration/environments/${ENV_ID}/configstate")
-
-        ERROR_MSG=$(echo "$RESPONSE" | jq -r '.message // empty')
-        if [ -n "$ERROR_MSG" ]; then
-          echo "Error enabling feature flag: $ERROR_MSG" >&2
-          exit 1
-        fi
+      uses: cloudbees-io/feature-flag-actions/configure@v1
+      with:
+        api_token: ${{ inputs.api_token }}
+        app_id: ${{ inputs.app_id }}
+        env_id: ${{ inputs.env_id }}
+        flag_id: ${{ inputs.flag_id }}
+        payload: '{"enabled":true}'
 

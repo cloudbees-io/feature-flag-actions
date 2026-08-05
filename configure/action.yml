@@ -1,0 +1,57 @@
+apiVersion: automation.cloudbees.io/v1alpha1
+kind: action
+name: feature-flag-configure
+description: 'Configure the state of a Feature Flag'
+
+inputs:
+  api_token:
+    description: "API token"
+    required: false
+    default: ""
+  app_id:
+    description: "The Unify Application ID"
+    required: true
+  env_id:
+    description: "The Unify Environment ID"
+    required: true
+  flag_id:
+    description: "The Unify Feature Flag ID"
+    required: true
+  payload:
+    description: "The JSON payload to POST to the configstate endpoint"
+    required: true
+
+runs:
+  using: composite
+  steps:
+    - id: configure-flag
+      name: Configure Feature Flag
+      uses: docker://alpine:3
+      env:
+        INPUT_API_TOKEN: ${{ inputs.api_token }}
+        SHARED_API_TOKEN: ${{ secrets.FEATURE_FLAG_ACTIONS_API_TOKEN }}
+        APP_ID: ${{ inputs.app_id }}
+        ENV_ID: ${{ inputs.env_id }}
+        FLAG_ID: ${{ inputs.flag_id }}
+        PAYLOAD: ${{ inputs.payload }}
+      run: |
+        set -eu
+        apk add --no-cache curl jq >/dev/null 2>&1
+
+        RESOLVED_TOKEN="${INPUT_API_TOKEN:-${SHARED_API_TOKEN:-}}"
+        if [ -z "$RESOLVED_TOKEN" ]; then
+          echo "Error: api_token input or \"FEATURE_FLAG_ACTIONS_API_TOKEN\" secret must be set" >&2
+          exit 1
+        fi
+
+        RESPONSE=$(curl -s -X POST \
+          -H "Authorization: Bearer ${RESOLVED_TOKEN}" \
+          -H "Content-Type: application/json" \
+          -d "${PAYLOAD}" \
+          "https://api.cloudbees.io/v1/applications/${APP_ID}/flags/${FLAG_ID}/configuration/environments/${ENV_ID}/configstate")
+
+        ERROR_MSG=$(echo "$RESPONSE" | jq -r '.message // empty')
+        if [ -n "$ERROR_MSG" ]; then
+          echo "Error configuring feature flag: $ERROR_MSG" >&2
+          exit 1
+        fi
