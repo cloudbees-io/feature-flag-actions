@@ -13,3 +13,21 @@
 | Enable a Feature Flag
 
 |===
+
+== Common Action Inputs
+
+There are a number of action inputs common across the actions in this repo.
+
+=== `api_token`
+
+This is a raw API token value. If not defined, the action will use a secret named `FEATURE_FLAG_ACTIONS_API_TOKEN` or will error.
+
+The easiest way to configure this input for the actions in this repo is to generate an API token and to store it as a secret property named `FEATURE_FLAG_ACTIONS_API_TOKEN` in the appropriate Unify organization/tenant.
+
+=== `app_id`, `env_id` and `flag_id`
+
+The easiest way to get the values for these inputs is from the link:https://cloudbees.io/[Unify dashboard]. Simply navigate to the Feature Flag configuration page in a browser and use the browser URL as follows.
+
+```
+https://cloudbees.io/cloudbees/{app_id}/feature-management/flags/{env_id}/configure?flagId={flag_id}
+```

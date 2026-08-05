@@ -13,8 +13,8 @@
 
 | `api_token`
 | String
-| Yes
-| The Unify API token used to make the configuration change.
+| No
+| The Unify API token used to make the configuration change. If not defined, the action will use a secret named `FEATURE_FLAG_ACTIONS_API_TOKEN` or will error.
 
 | `app_id`
 | String
@@ -26,9 +26,9 @@
 | Yes
 | The Unify environment ID in which the Feature Flag is to be enabled/disabled.
 
-| `flag`
+| `flag_id`
 | String
 | Yes
-| The Feature Flag name or UUID.
+| The Feature Flag UUID.
 
 |===
