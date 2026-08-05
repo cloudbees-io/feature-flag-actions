@@ -1,0 +1,34 @@
+= Enable Feature Flag
+
+== Inputs
+
+[cols="2a,2a,2a,5a",options="header"]
+.Input details
+|===
+
+| Input name
+| Data type
+| Required?
+| Description
+
+| `api_token`
+| String
+| Yes
+| The Unify API token used to make the configuration change.
+
+| `app_id`
+| String
+| Yes
+| The Unify application ID with which the Feature Flag is associated.
+
+| `env_id`
+| String
+| Yes
+| The Unify environment ID in which the Feature Flag is to be enabled/disabled.
+
+| `flag`
+| String
+| Yes
+| The Feature Flag name or UUID.
+
+|===

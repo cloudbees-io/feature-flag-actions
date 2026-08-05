@@ -1,0 +1,15 @@
+= CloudBees Unify Workflow Feature Flag configuration actions
+
+== Actions
+
+[cols="2a,9a",options="header"]
+.Input details
+|===
+
+| Name
+| Description
+
+| link:./enable[enable]
+| Enable a Feature Flag
+
+|===
