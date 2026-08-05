@@ -33,7 +33,7 @@
 
 |===
 
-See link:../#common-action-inputs[Common Action Inputs] for more details on the above inputs.
+See link:https://github.com/cloudbees-io/feature-flag-actions/tree/main#common-action-inputs[Common Action Inputs] for more details on the above inputs.
 
 == Usage
 
