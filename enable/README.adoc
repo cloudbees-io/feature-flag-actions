@@ -32,3 +32,9 @@
 | The Feature Flag UUID.
 
 |===
+
+See link:../#common-action-inputs[Common Action Inputs] for more details on the above inputs.
+
+== Usage
+
+TODO ...
