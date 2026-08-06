@@ -32,7 +32,7 @@ runs:
 
     - id: add-target-group-condition
       name: Add the Target Group condition to the flag conditions
-      uses: ghcr.io/jqlang/jq:latest
+      uses: docker://ghcr.io/jqlang/jq:latest
       run: |
         set -eu
         
