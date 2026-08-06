@@ -33,18 +33,13 @@ runs:
     - id: add-target-group-condition
       name: Add the Target Group condition to the flag conditions
       uses: docker://alpine:3
+      env:
+        FLAG_JSON: ${{ steps.get-flag-config.outputs.json }}
       run: |
         set -eu
         apk add --no-cache curl jq >/dev/null 2>&1
         
-        echo
-        echo "Curl installed ..."
-        which curl
-        
-        echo
-        echo "Flag config ..."
-        echo "${{ steps.get-flag-config.outputs.json }}"
-        
+        echo "${FLAG_JSON}"
 
 #    - id: patch-flag-conditions
 #      name: Patch the Feature Flag with the modified conditions
