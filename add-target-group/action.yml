@@ -34,12 +34,12 @@ runs:
       name: Add the Target Group condition to the flag conditions
       uses: docker://ghcr.io/jqlang/jq:latest
       run: |
-        set -eu
-        
-        echo
-        echo "Curl installed ..."
-        which curl
-        
+#        set -eu
+#
+#        echo
+#        echo "Curl installed ..."
+#        which curl
+#
         echo
         echo "Flag config ..."
         echo "${{ steps.get-flag-config.outputs.json }}"
