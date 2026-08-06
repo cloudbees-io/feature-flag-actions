@@ -1,6 +1,6 @@
-= Enable Feature Flag
+= Disable Feature Flag
 
-Enable a Feature Flag in a specific environment
+Disable a Feature Flag in a specific environment
 
 == Inputs
 
@@ -31,7 +31,7 @@ Enable a Feature Flag in a specific environment
 | `env_id`
 | String
 | Yes
-| The Unify environment ID in which the Feature Flag is to be enabled/disabled.
+| The Unify environment ID in which the Feature Flag is to be disabled.
 
 |===
 
@@ -47,12 +47,12 @@ jobs:
   build:
     steps:
 
-      # Previous steps decide if the flag should be enabled
+      # Previous steps decide if the flag should be disabled
 
-      - id: enable-campaign-subscribe-button-flag
-        name: Enable Campaign Subscribe button Feature Flag
+      - id: disable-campaign-subscribe-button-flag
+        name: Disable Campaign Subscribe button Feature Flag
         if: ${{ <condition> == 'true' }}
-        uses: cloudbees-io/feature-flag-actions/enable@v1
+        uses: cloudbees-io/feature-flag-actions/disable-flag@v1
         with:
           app_id: "f5e23d42-5c3c-467d-91d7-b07158822589"
           flag_id: "a5f246e5-7c7f-4c2a-9fe0-e05538b3d640"
@@ -63,4 +63,4 @@ Again, see link:https://github.com/cloudbees-io/feature-flag-actions/tree/main#c
 
 == See Also
 
-* link:../disable[disable] — Disable a Feature Flag in a specific environment
+* link:../enable-flag[enable-flag] — Enable a Feature Flag in a specific environment

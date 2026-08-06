@@ -63,4 +63,4 @@ Again, see link:https://github.com/cloudbees-io/feature-flag-actions/tree/main#c
 
 == See Also
 
-* link:../disable[disable] — Disable a Feature Flag in a specific environment
+* link:../disable-flag[disable] — Disable a Feature Flag in a specific environment

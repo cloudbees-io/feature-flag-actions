@@ -1,4 +1,4 @@
-= CloudBees Unify Workflow Feature Flag configuration actions
+= CloudBees Unify Workflow Feature Flag actions
 
 == Actions
 
@@ -9,10 +9,10 @@
 | Name
 | Description
 
-| link:./enable[enable]
+| link:./enable-flag[enable-flag]
 | Enable a Feature Flag in a specific environment
 
-| link:./disable[disable]
+| link:./disable-flag[disable-flag]
 | Disable a Feature Flag in a specific environment
 
 |===
