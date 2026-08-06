@@ -1,6 +1,6 @@
-= Configure Feature Flag
+= PATCH Feature Flag
 
-Set the configuration state of a Feature Flag by posting an arbitrary payload to the configstate endpoint.
+`PATCH` the configuration state of a Feature Flag.
 
 NOTE: This is a low-level action intended to be called by other actions in this repo. For typical use cases prefer link:../enable[enable] or link:../disable[disable].
 
@@ -33,16 +33,35 @@ NOTE: This is a low-level action intended to be called by other actions in this 
 | `env_id`
 | String
 | Yes
-| The Unify environment ID in which the Feature Flag is to be configured.
+| The Unify environment ID in which the Feature Flag is to be PATCHed.
 
 | `payload`
 | String
 | Yes
-| The JSON payload to POST to the configstate endpoint e.g. `{"enabled":true}`.
+| The JSON payload to PATCH the Flag config with e.g. `{"enabled":true}`. See schema below.
 
 |===
 
 See link:https://github.com/cloudbees-io/feature-flag-actions/tree/main#common-action-inputs[Common Action Inputs] for more details on the `api_token`, `app_id`, `flag_id`, and `env_id` inputs.
+
+
+=== `payload` schema
+Note the `payload` schema is:
+
+[source]
+----
+{
+  "enabled": boolean,
+  "defaultValue": any,
+  "conditions": [
+    array<object>
+  ],
+  "stickinessProperty": string,
+  "variantsEnabled": boolean
+}
+----
+
+Describing this payload in more detail is beyond scope for now. Easiest way to grok e.g. the `conditions` element is to mimic the desired flag rule config in the link:https://cloudbees.io/[Unify dashboard] and inspect the `PATCH` request payload.
 
 == See Also
 

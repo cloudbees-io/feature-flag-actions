@@ -1,7 +1,7 @@
 apiVersion: automation.cloudbees.io/v1alpha1
 kind: action
-name: feature-flag-configure
-description: 'Configure the state of a Feature Flag'
+name: feature-flag-patch
+description: 'Patch the state of a Feature Flag'
 
 inputs:
   api_token:
@@ -18,14 +18,14 @@ inputs:
     description: "The Unify Feature Flag ID"
     required: true
   payload:
-    description: "The JSON payload to POST to the configstate endpoint"
+    description: "The JSON payload to PATCH the flag config with"
     required: true
 
 runs:
   using: composite
   steps:
-    - id: configure-flag
-      name: Configure Feature Flag
+    - id: patch-flag
+      name: Patch Feature Flag
       uses: docker://alpine:3
       env:
         INPUT_API_TOKEN: ${{ inputs.api_token }}
@@ -44,11 +44,11 @@ runs:
           exit 1
         fi
 
-        RESPONSE=$(curl -s -X POST \
+        RESPONSE=$(curl -s -X PATCH \
           -H "Authorization: Bearer ${RESOLVED_TOKEN}" \
           -H "Content-Type: application/json" \
           -d "${PAYLOAD}" \
-          "https://api.cloudbees.io/v1/applications/${APP_ID}/flags/${FLAG_ID}/configuration/environments/${ENV_ID}/configstate")
+          "https://api.cloudbees.io/v1/applications/${APP_ID}/flags/${FLAG_ID}/configuration/environments/${ENV_ID}")
 
         ERROR_MSG=$(echo "$RESPONSE" | jq -r '.message // empty')
         if [ -n "$ERROR_MSG" ]; then
