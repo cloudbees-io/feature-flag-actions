@@ -2,7 +2,7 @@
 
 `PATCH` the configuration state of a Feature Flag.
 
-NOTE: This is a low-level action intended to be called by other actions in this repo. For typical use cases prefer link:../enable-flag[enable] or link:../disable-flag[disable].
+NOTE: This is a low-level action intended to be called by other actions in this repo. For typical use cases prefer link:../../enable-flag[enable-flag] or link:../../disable-flag[disable-flag].
 
 == Inputs
 
@@ -65,5 +65,5 @@ Describing this payload in more detail is beyond scope for now. Easiest way to g
 
 == See Also
 
-* link:../enable-flag[enable-flag] — Enable a Feature Flag in a specific environment
-* link:../disable-flag[disable-flag] — Disable a Feature Flag in a specific environment
+* link:../../enable-flag[enable-flag] — Enable a Feature Flag in a specific environment
+* link:../../disable-flag[disable-flag] — Disable a Feature Flag in a specific environment

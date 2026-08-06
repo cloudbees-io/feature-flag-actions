@@ -23,7 +23,7 @@ runs:
   steps:
     - id: get-flag-config
       name: Get FF Configuration
-      uses: cloudbees-io/feature-flag-actions/get-flag@v1
+      uses: cloudbees-io/feature-flag-actions/internal/get-flag@v1
       with:
         api_token: ${{ inputs.api_token }}
         app_id: ${{ inputs.app_id }}

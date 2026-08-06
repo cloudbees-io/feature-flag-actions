@@ -23,7 +23,7 @@ runs:
   steps:
     - id: enable-flag
       name: Enable Feature Flag
-      uses: cloudbees-io/feature-flag-actions/patch-flag@v1
+      uses: cloudbees-io/feature-flag-actions/internal/patch-flag@v1
       with:
         api_token: ${{ inputs.api_token }}
         app_id: ${{ inputs.app_id }}

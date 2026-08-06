@@ -41,5 +41,3 @@ See link:https://github.com/cloudbees-io/feature-flag-actions/tree/main#common-a
 
 * link:../enable-flag[enable-flag] — Enable a Feature Flag in a specific environment
 * link:../disable-flag[disable-flag] — Disable a Feature Flag in a specific environment
-* link:../patch-flag[patch-flag] — PATCH the configuration state of a Feature Flag
-* link:../get-flag[get-flag] — GET the configuration state of a Feature Flag
