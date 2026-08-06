@@ -37,7 +37,7 @@ runs:
         FLAG_ID: ${{ inputs.flag_id }}
       run: |
         set -eu
-        apk add --no-cache curl >/dev/null 2>&1
+        apk add --no-cache curl jq >/dev/null 2>&1
 
         RESOLVED_TOKEN="${INPUT_API_TOKEN:-${SHARED_API_TOKEN:-}}"
         if [ -z "$RESOLVED_TOKEN" ]; then
