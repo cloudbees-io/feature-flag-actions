@@ -23,12 +23,10 @@ runs:
   steps:
     - id: get-flag-config
       name: Get FF Configuration
-      uses: cloudbees-io/feature-flag-actions/internal/get-flag@v1
+      uses: cloudbees-io/feature-flag-actions/internal/get@v1
       with:
         api_token: ${{ inputs.api_token }}
-        app_id: ${{ inputs.app_id }}
-        env_id: ${{ inputs.env_id }}
-        flag_id: ${{ inputs.flag_id }}
+        path: v1/applications/${{ inputs.app_id }}/flags/${{ inputs.flag_id }}/configuration/environments/${{ inputs.env_id }}
 
     - id: add-target-group-condition
       name: Add the Target Group condition to the flag conditions
@@ -43,10 +41,8 @@ runs:
 
 #    - id: patch-flag-conditions
 #      name: Patch the Feature Flag with the modified conditions
-#      uses: cloudbees-io/feature-flag-actions/patch@v1
+#      uses: cloudbees-io/feature-flag-actions/internal/patch@v1
 #      with:
 #        api_token: ${{ inputs.api_token }}
-#        app_id: ${{ inputs.app_id }}
-#        env_id: ${{ inputs.env_id }}
-#        flag_id: ${{ inputs.flag_id }}
-#        payload: '{"enabled":true}'
+#        path: v1/applications/${{ inputs.app_id }}/flags/${{ inputs.flag_id }}/configuration/environments/${{ inputs.env_id }}
+#        payload: '...'

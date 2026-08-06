@@ -1,39 +1,32 @@
 apiVersion: automation.cloudbees.io/v1alpha1
 kind: action
-name: patch-flag
-description: 'Patch the state of a Feature Flag'
+name: get
+description: 'GET a Unify API resource'
 
 inputs:
   api_token:
     description: "API token"
     required: false
     default: ""
-  app_id:
-    description: "The Unify Application ID"
+  path:
+    description: "The API path to GET (relative to https://api.cloudbees.io/)"
     required: true
-  env_id:
-    description: "The Unify Environment ID"
-    required: true
-  flag_id:
-    description: "The Unify Feature Flag ID"
-    required: true
-  payload:
-    description: "The JSON payload to PATCH the flag config with"
-    required: true
+
+outputs:
+  json:
+    value: ${{ steps.get.outputs.json }}
+    description: The response JSON if the request was successful
 
 runs:
   using: composite
   steps:
-    - id: patch-flag
-      name: Patch Feature Flag
+    - id: get
+      name: GET resource
       uses: docker://alpine:3
       env:
         INPUT_API_TOKEN: ${{ inputs.api_token }}
         SHARED_API_TOKEN: ${{ secrets.FEATURE_FLAG_ACTIONS_API_TOKEN }}
-        APP_ID: ${{ inputs.app_id }}
-        ENV_ID: ${{ inputs.env_id }}
-        FLAG_ID: ${{ inputs.flag_id }}
-        PAYLOAD: ${{ inputs.payload }}
+        PATH: ${{ inputs.path }}
       run: |
         set -eu
         apk add --no-cache curl jq >/dev/null 2>&1
@@ -44,14 +37,14 @@ runs:
           exit 1
         fi
 
-        RESPONSE=$(curl -s -X PATCH \
+        RESPONSE=$(curl -s -X GET \
           -H "Authorization: Bearer ${RESOLVED_TOKEN}" \
-          -H "Content-Type: application/json" \
-          -d "${PAYLOAD}" \
-          "https://api.cloudbees.io/v1/applications/${APP_ID}/flags/${FLAG_ID}/configuration/environments/${ENV_ID}")
+          "https://api.cloudbees.io/${PATH}")
 
         ERROR_MSG=$(echo "$RESPONSE" | jq -r '.message // empty')
         if [ -n "$ERROR_MSG" ]; then
-          echo "Error configuring feature flag: $ERROR_MSG" >&2
+          echo "Error: $ERROR_MSG" >&2
           exit 1
         fi
+
+        echo -n "$RESPONSE" > $CLOUDBEES_OUTPUTS/json

@@ -23,10 +23,8 @@ runs:
   steps:
     - id: disable-flag
       name: Disable Feature Flag
-      uses: cloudbees-io/feature-flag-actions/internal/patch-flag@v1
+      uses: cloudbees-io/feature-flag-actions/internal/patch@v1
       with:
         api_token: ${{ inputs.api_token }}
-        app_id: ${{ inputs.app_id }}
-        env_id: ${{ inputs.env_id }}
-        flag_id: ${{ inputs.flag_id }}
+        path: v1/applications/${{ inputs.app_id }}/flags/${{ inputs.flag_id }}/configuration/environments/${{ inputs.env_id }}
         payload: '{"enabled":false}'

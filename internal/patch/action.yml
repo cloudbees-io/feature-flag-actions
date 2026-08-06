@@ -1,0 +1,49 @@
+apiVersion: automation.cloudbees.io/v1alpha1
+kind: action
+name: patch
+description: 'PATCH a Unify API resource'
+
+inputs:
+  api_token:
+    description: "API token"
+    required: false
+    default: ""
+  path:
+    description: "The API path to PATCH (relative to https://api.cloudbees.io/)"
+    required: true
+  payload:
+    description: "The JSON payload to PATCH the resource with"
+    required: true
+
+runs:
+  using: composite
+  steps:
+    - id: patch
+      name: PATCH resource
+      uses: docker://alpine:3
+      env:
+        INPUT_API_TOKEN: ${{ inputs.api_token }}
+        SHARED_API_TOKEN: ${{ secrets.FEATURE_FLAG_ACTIONS_API_TOKEN }}
+        PATH: ${{ inputs.path }}
+        PAYLOAD: ${{ inputs.payload }}
+      run: |
+        set -eu
+        apk add --no-cache curl jq >/dev/null 2>&1
+
+        RESOLVED_TOKEN="${INPUT_API_TOKEN:-${SHARED_API_TOKEN:-}}"
+        if [ -z "$RESOLVED_TOKEN" ]; then
+          echo "Error: api_token input or \"FEATURE_FLAG_ACTIONS_API_TOKEN\" secret must be set" >&2
+          exit 1
+        fi
+
+        RESPONSE=$(curl -s -X PATCH \
+          -H "Authorization: Bearer ${RESOLVED_TOKEN}" \
+          -H "Content-Type: application/json" \
+          -d "${PAYLOAD}" \
+          "https://api.cloudbees.io/${PATH}")
+
+        ERROR_MSG=$(echo "$RESPONSE" | jq -r '.message // empty')
+        if [ -n "$ERROR_MSG" ]; then
+          echo "Error: $ERROR_MSG" >&2
+          exit 1
+        fi
