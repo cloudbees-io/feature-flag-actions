@@ -42,7 +42,7 @@ runs:
         
         echo
         echo "Flag config ..."
-        echo "${{ outputs.get-flag-config.json }}"
+        echo "${{ steps.get-flag-config.outputs.json }}"
         
 
 #    - id: patch-flag-conditions
