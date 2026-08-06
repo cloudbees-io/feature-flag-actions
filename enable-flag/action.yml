@@ -1,6 +1,6 @@
 apiVersion: automation.cloudbees.io/v1alpha1
 kind: action
-name: feature-flag-enable
+name: enable-flag
 description: 'Enable a Feature Flag'
 
 inputs:

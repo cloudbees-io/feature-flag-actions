@@ -1,6 +1,6 @@
 apiVersion: automation.cloudbees.io/v1alpha1
 kind: action
-name: feature-flag-disable
+name: disable-flag
 description: 'Disable a Feature Flag'
 
 inputs:

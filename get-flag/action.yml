@@ -1,6 +1,6 @@
 apiVersion: automation.cloudbees.io/v1alpha1
 kind: action
-name: feature-flag-get
+name: get-flag
 description: 'Get the state of a Feature Flag'
 
 inputs:

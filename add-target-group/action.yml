@@ -1,6 +1,6 @@
 apiVersion: automation.cloudbees.io/v1alpha1
 kind: action
-name: feature-flag-add-target-group
+name: add-target-group
 description: 'Add a Target Group configuration to a Feature Flag'
 
 inputs:
