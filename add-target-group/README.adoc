@@ -1,6 +1,6 @@
-= Enable Feature Flag
+= Add Target Group
 
-Enable a Feature Flag in a specific environment
+Add a Target Group configuration to a Feature Flag in a specific environment.
 
 == Inputs
 
@@ -31,36 +31,15 @@ Enable a Feature Flag in a specific environment
 | `env_id`
 | String
 | Yes
-| The Unify environment ID in which the Feature Flag is to be enabled/disabled.
+| The Unify environment ID in which the Target Group is to be added.
 
 |===
 
 See link:https://github.com/cloudbees-io/feature-flag-actions/tree/main#common-action-inputs[Common Action Inputs] for more details on the above inputs.
 
-== Usage
-
-The example below assumes the API token has been stored as a shared secret named `FEATURE_FLAG_ACTIONS_API_TOKEN`, so the `api_token` input is omitted.
-
-[source,yaml]
-----
-jobs:
-  build:
-    steps:
-
-      # Previous steps decide if the flag should be enabled
-
-      - id: enable-campaign-subscribe-button-flag
-        name: Enable Campaign Subscribe button Feature Flag
-        if: ${{ <condition> == 'true' }}
-        uses: cloudbees-io/feature-flag-actions/enable@v1
-        with:
-          app_id: "f5e23d42-5c3c-467d-91d7-b07158822589"
-          flag_id: "a5f246e5-7c7f-4c2a-9fe0-e05538b3d640"
-          env_id: "5be99972-9f87-4093-8189-c0c0a31dc571"
-----
-
-Again, see link:https://github.com/cloudbees-io/feature-flag-actions/tree/main#common-action-inputs[Common Action Inputs] for more details on how to get the right values for the action inputs.
-
 == See Also
 
-* link:../disable-flag[disable] — Disable a Feature Flag in a specific environment
+* link:../enable-flag[enable-flag] — Enable a Feature Flag in a specific environment
+* link:../disable-flag[disable-flag] — Disable a Feature Flag in a specific environment
+* link:../patch-flag[patch-flag] — PATCH the configuration state of a Feature Flag
+* link:../get-flag[get-flag] — GET the configuration state of a Feature Flag

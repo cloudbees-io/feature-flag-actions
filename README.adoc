@@ -15,6 +15,9 @@
 | link:./disable-flag[disable-flag]
 | Disable a Feature Flag in a specific environment
 
+| link:./add-target-group[add-target-group]
+| Add a Target Group configuration to a Feature Flag
+
 |===
 
 == Common Action Inputs

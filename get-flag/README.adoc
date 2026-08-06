@@ -1,4 +1,4 @@
-= PATCH Feature Flag
+= Get Feature Flag
 
 `GET` the configuration state of a Feature Flag.
 
