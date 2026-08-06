@@ -1,0 +1,52 @@
+= PATCH Feature Flag
+
+`GET` the configuration state of a Feature Flag.
+
+== Inputs
+
+[cols="2a,2a,2a,5a",options="header"]
+.Input details
+|===
+
+| Input name
+| Data type
+| Required?
+| Description
+
+| `api_token`
+| String
+| No
+| The Unify API token used to get the flag configuration. If not defined, the action will use a secret named `FEATURE_FLAG_ACTIONS_API_TOKEN` or will error.
+
+| `app_id`
+| String
+| Yes
+| The Unify application ID with which the Feature Flag is associated.
+
+| `flag_id`
+| String
+| Yes
+| The Feature Flag UUID.
+
+| `env_id`
+| String
+| Yes
+| The Unify environment ID for which the Feature Flag config is sought.
+
+|===
+
+See link:https://github.com/cloudbees-io/feature-flag-actions/tree/main#common-action-inputs[Common Action Inputs] for more details on the `api_token`, `app_id`, `flag_id`, and `env_id` inputs.
+
+== Outputs
+
+[cols="2a,9a",options="header"]
+.Output details
+|===
+
+| Output name
+| Description
+
+| `json`
+| The Feature Flag configuration state JSON if the lookup was successful. The action will fail if the lookup fails.
+
+|===

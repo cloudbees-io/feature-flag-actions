@@ -1,0 +1,66 @@
+= Enable Feature Flag
+
+Enable a Feature Flag in a specific environment
+
+== Inputs
+
+[cols="2a,2a,2a,5a",options="header"]
+.Input details
+|===
+
+| Input name
+| Data type
+| Required?
+| Description
+
+| `api_token`
+| String
+| No
+| The Unify API token used to make the configuration change. If not defined, the action will use a secret named `FEATURE_FLAG_ACTIONS_API_TOKEN` or will error.
+
+| `app_id`
+| String
+| Yes
+| The Unify application ID with which the Feature Flag is associated.
+
+| `flag_id`
+| String
+| Yes
+| The Feature Flag UUID.
+
+| `env_id`
+| String
+| Yes
+| The Unify environment ID in which the Feature Flag is to be enabled/disabled.
+
+|===
+
+See link:https://github.com/cloudbees-io/feature-flag-actions/tree/main#common-action-inputs[Common Action Inputs] for more details on the above inputs.
+
+== Usage
+
+The example below assumes the API token has been stored as a shared secret named `FEATURE_FLAG_ACTIONS_API_TOKEN`, so the `api_token` input is omitted.
+
+[source,yaml]
+----
+jobs:
+  build:
+    steps:
+
+      # Previous steps decide if the flag should be enabled
+
+      - id: enable-campaign-subscribe-button-flag
+        name: Enable Campaign Subscribe button Feature Flag
+        if: ${{ <condition> == 'true' }}
+        uses: cloudbees-io/feature-flag-actions/enable@v1
+        with:
+          app_id: "f5e23d42-5c3c-467d-91d7-b07158822589"
+          flag_id: "a5f246e5-7c7f-4c2a-9fe0-e05538b3d640"
+          env_id: "5be99972-9f87-4093-8189-c0c0a31dc571"
+----
+
+Again, see link:https://github.com/cloudbees-io/feature-flag-actions/tree/main#common-action-inputs[Common Action Inputs] for more details on how to get the right values for the action inputs.
+
+== See Also
+
+* link:../disable[disable] — Disable a Feature Flag in a specific environment

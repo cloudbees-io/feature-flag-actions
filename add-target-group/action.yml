@@ -1,0 +1,56 @@
+apiVersion: automation.cloudbees.io/v1alpha1
+kind: action
+name: feature-flag-add-target-group
+description: 'Add a Target Group configuration to a Feature Flag'
+
+inputs:
+  api_token:
+    description: "API token"
+    required: false
+    default: ""
+  app_id:
+    description: "The Unify Application ID"
+    required: true
+  env_id:
+    description: "The Unify Environment ID"
+    required: true
+  flag_id:
+    description: "The Unify Feature Flag ID"
+    required: true
+
+runs:
+  using: composite
+  steps:
+    - id: get-flag-config
+      name: Get FF Configuration
+      uses: cloudbees-io/feature-flag-actions/get@v1
+      with:
+        api_token: ${{ inputs.api_token }}
+        app_id: ${{ inputs.app_id }}
+        env_id: ${{ inputs.env_id }}
+        flag_id: ${{ inputs.flag_id }}
+
+    - id: add-target-group-condition
+      name: Add the Target Group condition to the flag conditions
+      uses: ghcr.io/jqlang/jq:latest
+      run: |
+        set -eu
+        
+        echo
+        echo "Curl installed ..."
+        which curl
+        
+        echo
+        echo "Flag config ..."
+        echo "${{ outputs.get-flag-config.json }}"
+        
+
+#    - id: patch-flag-conditions
+#      name: Patch the Feature Flag with the modified conditions
+#      uses: cloudbees-io/feature-flag-actions/patch@v1
+#      with:
+#        api_token: ${{ inputs.api_token }}
+#        app_id: ${{ inputs.app_id }}
+#        env_id: ${{ inputs.env_id }}
+#        flag_id: ${{ inputs.flag_id }}
+#        payload: '{"enabled":true}'
