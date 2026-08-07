@@ -4,7 +4,7 @@ link:../README.adoc[← Index]
 
 Add a Target Group as a condition on a Feature Flag in a specific environment.
 
-The action looks up the Target Group by name, constructs the appropriate condition object, and patches the flag's condition list. New conditions are prepended so they take precedence over existing ones. See link:../internal/patch-flag/README.adoc[patch-flag] for full details on how condition merging works.
+The action looks up the Target Group by name, constructs the appropriate condition object, and patches the flag's condition list. New conditions are prepended so they take precedence over existing ones.
 
 == Inputs
 
