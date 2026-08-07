@@ -59,6 +59,25 @@ NOTE: This is a low-level action intended to be called by other actions in this 
 
 Describing this payload in more detail is beyond scope for now. Easiest way to grok e.g. the `conditions` element is to mimic the desired flag rule config in the link:https://cloudbees.io/[Unify dashboard] and inspect the `PATCH` request payload.
 
+== Patching flag conditions
+
+When the `payload` contains a `conditions` list this action applies special merge logic rather than replacing the existing conditions wholesale.
+
+=== Empty conditions list
+
+Passing an empty `conditions` list (`[]`) is explicitly rejected with an error. Sending an empty list to the API would silently delete all existing conditions on the flag, which is almost never the intent.
+
+=== Non-empty conditions list
+
+When new conditions are supplied the action:
+
+1. GETs the current flag configuration from the API.
+2. Prepends the incoming conditions to the existing conditions list, giving the new conditions precedence in evaluation order.
+3. Deduplicates — any incoming condition that is an exact JSON match of an existing condition is not added twice.
+4. Issues the PATCH with the merged conditions list.
+
+NOTE: This intentionally does not support modifying the evaluated flag value of existing conditions. If an existing condition overlaps with a new one, both will be present in the list — the new condition takes precedence by virtue of being first. Any obsolete conditions left behind after a merge will need to be manually cleaned up via the link:https://cloudbees.io/[Unify dashboard].
+
 == See Also
 
 * link:../../enable-flag[enable-flag] — Enable a Feature Flag in a specific environment

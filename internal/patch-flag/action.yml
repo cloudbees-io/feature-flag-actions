@@ -44,11 +44,64 @@ runs:
           exit 1
         fi
 
+        FLAG_API_URL="https://api.cloudbees.io/v1/applications/${APP_ID}/flags/${FLAG_ID}/configuration/environments/${ENV_ID}"
+
+        # Check if the payload contains a "conditions" key at all.
+        HAS_CONDITIONS=$(echo "$PAYLOAD" | jq 'has("conditions")')
+        if [ "$HAS_CONDITIONS" = "true" ]; then
+
+          # Reject an empty conditions list — sending [] to the API would delete
+          # all existing conditions on the flag.
+          CONDITIONS_LEN=$(echo "$PAYLOAD" | jq '.conditions | length')
+          if [ "$CONDITIONS_LEN" -eq 0 ]; then
+            echo "Error: payload contains an empty conditions list. This would delete all existing flag conditions and is not supported." >&2
+            exit 1
+          fi
+
+          # GET the current flag config so we can merge conditions rather than
+          # replace them wholesale.
+          CURRENT=$(curl -s -X GET \
+            -H "Authorization: Bearer ${RESOLVED_TOKEN}" \
+            "${FLAG_API_URL}")
+
+          ERROR_MSG=$(echo "$CURRENT" | jq -r '.message // empty')
+          if [ -n "$ERROR_MSG" ]; then
+            echo "Error fetching current flag config: $ERROR_MSG" >&2
+            exit 1
+          fi
+
+          # Note: this intentionally does not try to support modifications to the
+          # evaluated flag value of existing conditions. By adding incoming conditions
+          # to the front of the list they get precedence over any existing conditions
+          # with overlapping targeting rules. Any obsolete conditions left behind
+          # would need to be manually cleaned up via the Unify dashboard.
+
+          # Build the merged conditions list:
+          #   $new  — the incoming conditions from the payload
+          #   $existing — the conditions already on the flag
+          #
+          # Expression: $new + ($existing | map(select(. as $e | $new | any(. == $e) | not)))
+          #
+          #   - Start with all $new conditions (they go first, giving them precedence).
+          #   - Then iterate over $existing and keep only those that do NOT appear
+          #     anywhere in $new (any(. == $e) tests for deep JSON equality).
+          #   - The result is new conditions at the top, with non-duplicate existing
+          #     conditions appended after.
+          MERGED=$(jq -n \
+            --argjson new "$(echo "$PAYLOAD" | jq '.conditions')" \
+            --argjson existing "$(echo "$CURRENT" | jq '.conditions // []')" \
+            '$new + ($existing | map(select(. as $e | $new | any(. == $e) | not)))')
+
+          # Splice the merged conditions back into the payload, replacing the
+          # original (unmerged) conditions list.
+          PAYLOAD=$(echo "$PAYLOAD" | jq --argjson merged "$MERGED" '.conditions = $merged')
+        fi
+
         RESPONSE=$(curl -s -X PATCH \
           -H "Authorization: Bearer ${RESOLVED_TOKEN}" \
           -H "Content-Type: application/json" \
           -d "${PAYLOAD}" \
-          "https://api.cloudbees.io/v1/applications/${APP_ID}/flags/${FLAG_ID}/configuration/environments/${ENV_ID}")
+          "${FLAG_API_URL}")
 
         ERROR_MSG=$(echo "$RESPONSE" | jq -r '.message // empty')
         if [ -n "$ERROR_MSG" ]; then
