@@ -4,7 +4,7 @@ link:../README.adoc[← Index]
 
 Add a Target Group as a condition on a Feature Flag in a specific environment.
 
-The action looks up the Target Group by name, constructs the appropriate condition object, and patches the flag's condition list. New conditions are prepended so they take precedence over existing ones. If an identical condition already exists on the flag it will not be added again.
+The action looks up the Target Group by name, constructs the appropriate condition object, and patches the flag's condition list. New conditions are prepended so they take precedence over existing ones. If an identical condition already exists on the flag it will not be added again. Existing conditions are never overwritten or removed — if obsolete conditions accumulate over time they will need to be manually cleaned up via the link:https://cloudbees.io/[Unify dashboard].
 
 == Inputs
 
