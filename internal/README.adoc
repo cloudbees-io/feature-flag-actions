@@ -1,0 +1,5 @@
+= Internal Actions
+
+The actions in this folder are for internal use by the actions in this repo only.
+
+WARNING: These actions are not intended for external use. They are implementation details subject to change without notice and provide no compatibility guarantees.
