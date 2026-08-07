@@ -89,7 +89,7 @@ runs:
           #     conditions appended after.
           MERGED=$(jq -n \
             --argjson new "$(echo "$PAYLOAD" | jq '.conditions')" \
-            --argjson existing "$(echo "$CURRENT" | jq '.conditions // []')" \
+            --argjson existing "$(echo "$CURRENT" | jq '.configuration.conditions // []')" \
             '$new + ($existing | map(select(. as $e | $new | any(. == $e) | not)))')
 
           # Splice the merged conditions back into the payload, replacing the
