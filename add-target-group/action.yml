@@ -21,7 +21,7 @@ inputs:
     description: "The name of the Target Group"
     required: true
   matches:
-    description: "How the Target Group is matched. Accepted values: all/allOf, any/anyOf, none/noneOf (case insensitive)"
+    description: "Whether the flag value is returned when the user matches the Target Group (true) or does not match it (false)"
     required: true
   flag_value:
     description: "The flag value to return when the condition matches"
@@ -55,39 +55,29 @@ runs:
           exit 1
         fi
 
-        # Normalise the matches input to lowercase for case-insensitive comparison.
-        MATCHES_LOWER=$(echo "$MATCHES" | tr '[:upper:]' '[:lower:]')
-
-        # Build the inner group reference — common to all match types.
+        # Build the inner group reference.
         # jq --arg injects a shell variable as a JSON string.
         GROUP_REF=$(jq -n --arg id "$TG_ID" '{"group":{"id":$id}}')
 
         # Construct the condition object based on the matches value.
         # The outer "allOf" wrapper is required by the flag conditions schema.
-        #   all/allOf  -> {"allOf":[{"allOf":[<group>]}],"flagValue":<value>}
-        #   any/anyOf  -> {"allOf":[{"anyOf":[<group>]}],"flagValue":<value>}
-        #   none/noneOf -> {"allOf":[{"not":{"allOf":[<group>]}}],"flagValue":<value>}
-        case "$MATCHES_LOWER" in
-          all|allof)
+        #   true  -> user IS in the group:     {"allOf":[{"allOf":[<group>]}],"flagValue":<value>}
+        #   false -> user is NOT in the group: {"allOf":[{"not":{"allOf":[<group>]}}],"flagValue":<value>}
+        case "$MATCHES" in
+          true)
             CONDITION=$(jq -n \
               --argjson group "$GROUP_REF" \
               --argjson flagValue "$FLAG_VALUE" \
               '{"allOf":[{"allOf":[$group]}],"flagValue":$flagValue}')
             ;;
-          any|anyof)
-            CONDITION=$(jq -n \
-              --argjson group "$GROUP_REF" \
-              --argjson flagValue "$FLAG_VALUE" \
-              '{"allOf":[{"anyOf":[$group]}],"flagValue":$flagValue}')
-            ;;
-          none|noneof)
+          false)
             CONDITION=$(jq -n \
               --argjson group "$GROUP_REF" \
               --argjson flagValue "$FLAG_VALUE" \
               '{"allOf":[{"not":{"allOf":[$group]}}],"flagValue":$flagValue}')
             ;;
           *)
-            echo "Error: unrecognised matches value \"${MATCHES}\". Must be one of: all, allOf, any, anyOf, none, noneOf" >&2
+            echo "Error: unrecognised matches value \"${MATCHES}\". Must be true or false." >&2
             exit 1
             ;;
         esac

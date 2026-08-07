@@ -43,9 +43,9 @@ The action looks up the Target Group by name, constructs the appropriate conditi
 | The name of the Target Group to add as a condition.
 
 | `matches`
-| String
+| Boolean
 | Yes
-| How the Target Group is matched. Accepted values (case insensitive): `all` / `allOf`, `any` / `anyOf`, `none` / `noneOf`. See <<matches>> below.
+| Whether the flag value is returned when the user matches the Target Group (`true`) or does not match it (`false`).
 
 | `flag_value`
 | Any
@@ -55,26 +55,6 @@ The action looks up the Target Group by name, constructs the appropriate conditi
 |===
 
 See link:https://github.com/cloudbees-io/feature-flag-actions/tree/main#common-action-inputs[Common Action Inputs] for more details on the `api_token`, `app_id`, `flag_id`, and `env_id` inputs.
-
-[#matches]
-== `matches` values
-
-[cols="2a,9a",options="header"]
-|===
-
-| Value
-| Condition produced
-
-| `all` / `allOf`
-| The flag value is returned when the user belongs to *all* of the specified group's conditions — equivalent to an `allOf` match on the group.
-
-| `any` / `anyOf`
-| The flag value is returned when the user belongs to *any* of the specified group's conditions — equivalent to an `anyOf` match on the group.
-
-| `none` / `noneOf`
-| The flag value is returned when the user belongs to *none* of the specified group's conditions — equivalent to a `not allOf` match on the group.
-
-|===
 
 == Usage
 
@@ -94,6 +74,6 @@ jobs:
           flag_id: "a5f246e5-7c7f-4c2a-9fe0-e05538b3d640"
           env_id: "5be99972-9f87-4093-8189-c0c0a31dc571"
           target_group_name: "AcmeEng"
-          matches: "all"
+          matches: true
           flag_value: true
 ----
