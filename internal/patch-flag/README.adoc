@@ -1,6 +1,6 @@
-= Patch Resource
+= Patch Feature Flag Config
 
-`PATCH` a Unify API resource.
+`PATCH` the configuration of a Feature Flag.
 
 NOTE: This is a low-level action intended to be called by other actions in this repo. For typical use cases prefer link:../../enable-flag[enable-flag] or link:../../disable-flag[disable-flag].
 
@@ -20,15 +20,25 @@ NOTE: This is a low-level action intended to be called by other actions in this 
 | No
 | The Unify API token. If not defined, the action will use a secret named `FEATURE_FLAG_ACTIONS_API_TOKEN` or will error.
 
-| `path`
+| `app_id`
 | String
 | Yes
-| The API path to PATCH (relative to `https://api.cloudbees.io/`) e.g. `v1/applications/{app_id}/flags/{flag_id}/configuration/environments/{env_id}`.
+| The Unify application ID with which the Feature Flag is associated.
+
+| `flag_id`
+| String
+| Yes
+| The Feature Flag UUID.
+
+| `env_id`
+| String
+| Yes
+| The Unify environment ID in which the Feature Flag is to be PATCHed.
 
 | `payload`
 | String
 | Yes
-| The JSON payload to PATCH the resource with e.g. `{"enabled":true}`. See schema below.
+| The JSON payload to PATCH the flag config with e.g. `{"enabled":true}`. See schema below.
 
 |===
 

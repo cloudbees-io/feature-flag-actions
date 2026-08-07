@@ -23,9 +23,11 @@ runs:
   steps:
     - id: enable-flag
       name: Enable Feature Flag
-      uses: cloudbees-io/feature-flag-actions/internal/patch@v1
+      uses: cloudbees-io/feature-flag-actions/internal/patch-flag@v1
       with:
         api_token: ${{ inputs.api_token }}
-        path: v1/applications/${{ inputs.app_id }}/flags/${{ inputs.flag_id }}/configuration/environments/${{ inputs.env_id }}
+        app_id: ${{ inputs.app_id }}
+        env_id: ${{ inputs.env_id }}
+        flag_id: ${{ inputs.flag_id }}
         payload: '{"enabled":true}'
 
