@@ -1,4 +1,5 @@
 = Add Target Group
+link:../README.adoc[← Index]
 
 Add a Target Group configuration to a Feature Flag in a specific environment.
 
@@ -36,8 +37,3 @@ Add a Target Group configuration to a Feature Flag in a specific environment.
 |===
 
 See link:https://github.com/cloudbees-io/feature-flag-actions/tree/main#common-action-inputs[Common Action Inputs] for more details on the above inputs.
-
-== See Also
-
-* link:../enable-flag[enable-flag] — Enable a Feature Flag in a specific environment
-* link:../disable-flag[disable-flag] — Disable a Feature Flag in a specific environment
