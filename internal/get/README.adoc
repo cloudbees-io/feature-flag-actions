@@ -1,8 +1,8 @@
-= PATCH Feature Flag
+= Get Resource
 
-`PATCH` the configuration state of a Feature Flag.
+`GET` a Unify API resource.
 
-NOTE: This is a low-level action intended to be called by other actions in this repo. For typical use cases prefer link:../../enable-flag[enable-flag] or link:../../disable-flag[disable-flag].
+NOTE: This is a low-level action intended to be called by other actions in this repo.
 
 == Inputs
 
@@ -18,52 +18,25 @@ NOTE: This is a low-level action intended to be called by other actions in this 
 | `api_token`
 | String
 | No
-| The Unify API token used to make the configuration change. If not defined, the action will use a secret named `FEATURE_FLAG_ACTIONS_API_TOKEN` or will error.
+| The Unify API token. If not defined, the action will use a secret named `FEATURE_FLAG_ACTIONS_API_TOKEN` or will error.
 
-| `app_id`
+| `path`
 | String
 | Yes
-| The Unify application ID with which the Feature Flag is associated.
-
-| `flag_id`
-| String
-| Yes
-| The Feature Flag UUID.
-
-| `env_id`
-| String
-| Yes
-| The Unify environment ID in which the Feature Flag is to be PATCHed.
-
-| `payload`
-| String
-| Yes
-| The JSON payload to PATCH the Flag config with e.g. `{"enabled":true}`. See schema below.
+| The API path to GET (relative to `https://api.cloudbees.io/`) e.g. `v1/applications/{app_id}/flags/{flag_id}/configuration/environments/{env_id}`.
 
 |===
 
-See link:https://github.com/cloudbees-io/feature-flag-actions/tree/main#common-action-inputs[Common Action Inputs] for more details on the `api_token`, `app_id`, `flag_id`, and `env_id` inputs.
+== Outputs
 
+[cols="2a,9a",options="header"]
+.Output details
+|===
 
-=== `payload` schema
-Note the `payload` schema is:
+| Output name
+| Description
 
-[source]
-----
-{
-  "enabled": boolean,
-  "defaultValue": any,
-  "conditions": [
-    array<object>
-  ],
-  "stickinessProperty": string,
-  "variantsEnabled": boolean
-}
-----
+| `json`
+| The response JSON if the request was successful. The action will fail if the request fails.
 
-Describing this payload in more detail is beyond scope for now. Easiest way to grok e.g. the `conditions` element is to mimic the desired flag rule config in the link:https://cloudbees.io/[Unify dashboard] and inspect the `PATCH` request payload.
-
-== See Also
-
-* link:../../enable-flag[enable-flag] — Enable a Feature Flag in a specific environment
-* link:../../disable-flag[disable-flag] — Disable a Feature Flag in a specific environment
+|===
