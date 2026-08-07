@@ -17,34 +17,91 @@ inputs:
   flag_id:
     description: "The Unify Feature Flag ID"
     required: true
+  target_group_name:
+    description: "The name of the Target Group"
+    required: true
+  matches:
+    description: "How the Target Group is matched. Accepted values: all/allOf, any/anyOf, none/noneOf (case insensitive)"
+    required: true
+  flag_value:
+    description: "The flag value to return when the condition matches"
+    required: true
 
 runs:
   using: composite
   steps:
-    - id: get-flag-config
-      name: Get FF Configuration
+    - id: get-target-group-config
+      name: Get target group configuration
       uses: cloudbees-io/feature-flag-actions/internal/get@v1
       with:
         api_token: ${{ inputs.api_token }}
-        path: v1/applications/${{ inputs.app_id }}/flags/${{ inputs.flag_id }}/configuration/environments/${{ inputs.env_id }}
+        path: v1/applications/${{ inputs.app_id }}/target-groups/by-name/${{ inputs.target_group_name }}
 
-    - id: add-target-group-condition
-      name: Add the Target Group condition to the flag conditions
+    - id: construct-target-group-condition
+      name: Construct the Target Group condition JSON
       uses: docker://alpine:3
       env:
-        FLAG_JSON: ${{ steps.get-flag-config.outputs.json }}
+        TG_JSON: ${{ steps.get-target-group-config.outputs.json }}
+        MATCHES: ${{ inputs.matches }}
+        FLAG_VALUE: ${{ inputs.flag_value }}
       run: |
         set -eu
-        apk add --no-cache curl jq >/dev/null 2>&1
-        
-        echo "${FLAG_JSON}"
+        apk add --no-cache jq >/dev/null 2>&1
 
-#    - id: patch-flag-conditions
-#      name: Patch the Feature Flag with the modified conditions
-#      uses: cloudbees-io/feature-flag-actions/internal/patch-flag@v1
-#      with:
-#        api_token: ${{ inputs.api_token }}
-#        app_id: ${{ inputs.app_id }}
-#        env_id: ${{ inputs.env_id }}
-#        flag_id: ${{ inputs.flag_id }}
-#        payload: '...'
+        # Extract the target group UUID from the GET response.
+        TG_ID=$(echo "$TG_JSON" | jq -r '.targetGroup.id')
+        if [ -z "$TG_ID" ] || [ "$TG_ID" = "null" ]; then
+          echo "Error: could not extract target group ID from response" >&2
+          exit 1
+        fi
+
+        # Normalise the matches input to lowercase for case-insensitive comparison.
+        MATCHES_LOWER=$(echo "$MATCHES" | tr '[:upper:]' '[:lower:]')
+
+        # Build the inner group reference — common to all match types.
+        # jq --arg injects a shell variable as a JSON string.
+        GROUP_REF=$(jq -n --arg id "$TG_ID" '{"group":{"id":$id}}')
+
+        # Construct the condition object based on the matches value.
+        # The outer "allOf" wrapper is required by the flag conditions schema.
+        #   all/allOf  -> {"allOf":[{"allOf":[<group>]}],"flagValue":<value>}
+        #   any/anyOf  -> {"allOf":[{"anyOf":[<group>]}],"flagValue":<value>}
+        #   none/noneOf -> {"allOf":[{"not":{"allOf":[<group>]}}],"flagValue":<value>}
+        case "$MATCHES_LOWER" in
+          all|allof)
+            CONDITION=$(jq -n \
+              --argjson group "$GROUP_REF" \
+              --argjson flagValue "$FLAG_VALUE" \
+              '{"allOf":[{"allOf":[$group]}],"flagValue":$flagValue}')
+            ;;
+          any|anyof)
+            CONDITION=$(jq -n \
+              --argjson group "$GROUP_REF" \
+              --argjson flagValue "$FLAG_VALUE" \
+              '{"allOf":[{"anyOf":[$group]}],"flagValue":$flagValue}')
+            ;;
+          none|noneof)
+            CONDITION=$(jq -n \
+              --argjson group "$GROUP_REF" \
+              --argjson flagValue "$FLAG_VALUE" \
+              '{"allOf":[{"not":{"allOf":[$group]}}],"flagValue":$flagValue}')
+            ;;
+          *)
+            echo "Error: unrecognised matches value \"${MATCHES}\". Must be one of: all, allOf, any, anyOf, none, noneOf" >&2
+            exit 1
+            ;;
+        esac
+
+        # Write the condition as a single-element conditions array to CLOUDBEES_OUTPUTS
+        # so the next step can pass it as the patch-flag payload.
+        echo -n "$(jq -n --argjson c "$CONDITION" '{"conditions":[$c]}')" > $CLOUDBEES_OUTPUTS/payload
+
+    - id: patch-flag-conditions
+      name: Patch the Feature Flag with the new Target Group condition
+      uses: cloudbees-io/feature-flag-actions/internal/patch-flag@v1
+      with:
+        api_token: ${{ inputs.api_token }}
+        app_id: ${{ inputs.app_id }}
+        env_id: ${{ inputs.env_id }}
+        flag_id: ${{ inputs.flag_id }}
+        payload: ${{ steps.construct-target-group-condition.outputs.payload }}

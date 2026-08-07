@@ -2,7 +2,9 @@
 
 link:../README.adoc[← Index]
 
-Add a Target Group configuration to a Feature Flag in a specific environment.
+Add a Target Group as a condition on a Feature Flag in a specific environment.
+
+The action looks up the Target Group by name, constructs the appropriate condition object, and patches the flag's condition list. New conditions are prepended so they take precedence over existing ones. See link:../internal/patch-flag/README.adoc[patch-flag] for full details on how condition merging works.
 
 == Inputs
 
@@ -33,8 +35,65 @@ Add a Target Group configuration to a Feature Flag in a specific environment.
 | `env_id`
 | String
 | Yes
-| The Unify environment ID in which the Target Group is to be added.
+| The Unify environment ID in which the Target Group condition is to be added.
+
+| `target_group_name`
+| String
+| Yes
+| The name of the Target Group to add as a condition.
+
+| `matches`
+| String
+| Yes
+| How the Target Group is matched. Accepted values (case insensitive): `all` / `allOf`, `any` / `anyOf`, `none` / `noneOf`. See <<matches>> below.
+
+| `flag_value`
+| Any
+| Yes
+| The flag value to return when the condition matches e.g. `true`, `false`, or a string variant value.
 
 |===
 
-See link:https://github.com/cloudbees-io/feature-flag-actions/tree/main#common-action-inputs[Common Action Inputs] for more details on the above inputs.
+See link:https://github.com/cloudbees-io/feature-flag-actions/tree/main#common-action-inputs[Common Action Inputs] for more details on the `api_token`, `app_id`, `flag_id`, and `env_id` inputs.
+
+[#matches]
+== `matches` values
+
+[cols="2a,9a",options="header"]
+|===
+
+| Value
+| Condition produced
+
+| `all` / `allOf`
+| The flag value is returned when the user belongs to *all* of the specified group's conditions — equivalent to an `allOf` match on the group.
+
+| `any` / `anyOf`
+| The flag value is returned when the user belongs to *any* of the specified group's conditions — equivalent to an `anyOf` match on the group.
+
+| `none` / `noneOf`
+| The flag value is returned when the user belongs to *none* of the specified group's conditions — equivalent to a `not allOf` match on the group.
+
+|===
+
+== Usage
+
+The example below assumes the API token has been stored as a shared secret named `FEATURE_FLAG_ACTIONS_API_TOKEN`, so the `api_token` input is omitted.
+
+[source,yaml]
+----
+jobs:
+  build:
+    steps:
+
+      - id: add-acme-eng-target-group
+        name: Add AcmeEng target group to feature flag
+        uses: cloudbees-io/feature-flag-actions/add-target-group@v1
+        with:
+          app_id: "f5e23d42-5c3c-467d-91d7-b07158822589"
+          flag_id: "a5f246e5-7c7f-4c2a-9fe0-e05538b3d640"
+          env_id: "5be99972-9f87-4093-8189-c0c0a31dc571"
+          target_group_name: "AcmeEng"
+          matches: "all"
+          flag_value: true
+----
