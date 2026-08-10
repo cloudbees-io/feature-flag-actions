@@ -3,7 +3,6 @@
 == Actions
 
 [cols="2a,9a",options="header"]
-.Input details
 |===
 
 | Name
