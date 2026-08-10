@@ -18,7 +18,7 @@
 | Add a Target Group configuration to a Feature Flag
 
 | link:./set-rollout-schedule[set-rollout-schedule]
-| Set the timed percentage rollout schedule for a Feature Flag
+| Set the timed percentage rollout schedule on the default configuration of a Feature Flag
 
 |===
 

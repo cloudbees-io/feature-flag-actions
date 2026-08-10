@@ -2,9 +2,11 @@
 
 link:../README.adoc[← Index]
 
-Set a timed rollout schedule for a Feature Flag in a specific environment.
+Set a timed percentage rollout schedule on the *default* configuration of a Feature Flag in a specific environment.
 
-The schedule defines a series of percentage rollout steps, each taking effect at a given point in time. This sets the `defaultValue` of the flag configuration.
+NOTE: This action only applies to the flag's `defaultValue` — the baseline rollout that applies when no condition rules match. Condition rules also support schedules, but configuring those is outside the scope of this action.
+
+The schedule defines a series of percentage rollout steps, each taking effect at a given point in time, and replaces any existing `defaultValue` schedule on the flag.
 
 == Inputs
 
