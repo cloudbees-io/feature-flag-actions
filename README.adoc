@@ -2,7 +2,7 @@
 
 == Actions
 
-[cols="2a,9a",options="header"]
+[cols="2a,8a",options="header"]
 |===
 
 | Name
@@ -16,6 +16,9 @@
 
 | link:./add-target-group[add-target-group]
 | Add a Target Group configuration to a Feature Flag
+
+| link:./set-rollout-schedule[set-rollout-schedule]
+| Set the timed percentage rollout schedule for a Feature Flag
 
 |===
 

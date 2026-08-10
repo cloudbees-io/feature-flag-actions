@@ -1,0 +1,35 @@
+apiVersion: automation.cloudbees.io/v1alpha1
+kind: action
+name: set-rollout-schedule
+description: 'Set the rollout schedule for a Feature Flag'
+
+inputs:
+  api_token:
+    description: "API token"
+    required: false
+    default: ""
+  app_id:
+    description: "The Unify Application ID"
+    required: true
+  env_id:
+    description: "The Unify Environment ID"
+    required: true
+  flag_id:
+    description: "The Unify Feature Flag ID"
+    required: true
+  schedule:
+    description: "JSON array of rollout schedule entries, each with a 'from' (ISO 8601 timestamp) and 'percentage' (0-100) e.g. [{\"from\":\"2026-08-10T10:00:00.000Z\",\"percentage\":20}]"
+    required: true
+
+runs:
+  using: composite
+  steps:
+    - id: set-rollout-schedule
+      name: Set Feature Flag rollout schedule
+      uses: cloudbees-io/feature-flag-actions/internal/patch-flag@v1
+      with:
+        api_token: ${{ inputs.api_token }}
+        app_id: ${{ inputs.app_id }}
+        env_id: ${{ inputs.env_id }}
+        flag_id: ${{ inputs.flag_id }}
+        payload: '{"defaultValue":${{ inputs.schedule }}}'

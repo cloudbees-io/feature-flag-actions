@@ -1,0 +1,88 @@
+= Set Rollout Schedule
+
+link:../README.adoc[← Index]
+
+Set a timed rollout schedule for a Feature Flag in a specific environment.
+
+The schedule defines a series of percentage rollout steps, each taking effect at a given point in time. This sets the `defaultValue` of the flag configuration.
+
+== Inputs
+
+[cols="2a,2a,2a,5a",options="header"]
+.Input details
+|===
+
+| Input name
+| Data type
+| Required?
+| Description
+
+| `api_token`
+| String
+| No
+| The Unify API token used to make the configuration change. If not defined, the action will use a secret named `FEATURE_FLAG_ACTIONS_API_TOKEN` or will error.
+
+| `app_id`
+| String
+| Yes
+| The Unify application ID with which the Feature Flag is associated.
+
+| `flag_id`
+| String
+| Yes
+| The Feature Flag UUID.
+
+| `env_id`
+| String
+| Yes
+| The Unify environment ID in which the rollout schedule is to be set.
+
+| `schedule`
+| JSON array
+| Yes
+| The rollout schedule as a JSON array of step objects. Each step has a `from` (ISO 8601 UTC timestamp) and a `percentage` (0–100). See <<schedule-format>> below.
+
+|===
+
+See link:https://github.com/cloudbees-io/feature-flag-actions/tree/main#common-action-inputs[Common Action Inputs] for more details on the `api_token`, `app_id`, `flag_id`, and `env_id` inputs.
+
+[#schedule-format]
+== `schedule` format
+
+Each entry in the schedule array specifies when a rollout step takes effect and what percentage of users it applies to.
+
+[source,json]
+----
+[
+  {"from": "2026-08-10T10:00:00.000Z", "percentage": 20},
+  {"from": "2026-08-10T10:30:00.000Z", "percentage": 50},
+  {"from": "2026-08-10T11:00:00.000Z", "percentage": 100}
+]
+----
+
+NOTE: Setting a step to `"percentage": 0` effectively disables the rollout at that point in time.
+
+== Usage
+
+The example below assumes the API token has been stored as a shared secret named `FEATURE_FLAG_ACTIONS_API_TOKEN`, so the `api_token` input is omitted.
+
+[source,yaml]
+----
+jobs:
+  build:
+    steps:
+
+      - id: set-campaign-flag-rollout-schedule
+        name: Set Campaign Feature Flag rollout schedule
+        uses: cloudbees-io/feature-flag-actions/set-rollout-schedule@v1
+        with:
+          app_id: "f5e23d42-5c3c-467d-91d7-b07158822589"
+          flag_id: "a5f246e5-7c7f-4c2a-9fe0-e05538b3d640"
+          env_id: "5be99972-9f87-4093-8189-c0c0a31dc571"
+          schedule: |
+            [
+              {"from": "2026-08-10T10:00:00.000Z", "percentage": 20},
+              {"from": "2026-08-10T10:30:00.000Z", "percentage": 50},
+              {"from": "2026-08-10T11:00:00.000Z", "percentage": 100}
+            ]
+----
