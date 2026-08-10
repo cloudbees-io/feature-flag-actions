@@ -64,6 +64,10 @@ Each entry in the schedule array specifies when a rollout step takes effect and 
 
 NOTE: Setting a step to `"percentage": 0` effectively disables the rollout at that point in time.
 
+== See Also
+
+* link:../set-rollout-split[set-rollout-split] — Set a true/false percentage split on the default configuration of a Feature Flag
+
 == Usage
 
 The example below assumes the API token has been stored as a shared secret named `FEATURE_FLAG_ACTIONS_API_TOKEN`, so the `api_token` input is omitted.

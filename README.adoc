@@ -20,6 +20,9 @@
 | link:./set-rollout-schedule[set-rollout-schedule]
 | Set the timed percentage rollout schedule on the default configuration of a Feature Flag
 
+| link:./set-rollout-split[set-rollout-split]
+| Set a true/false percentage split on the default configuration of a Feature Flag
+
 |===
 
 == Common Action Inputs

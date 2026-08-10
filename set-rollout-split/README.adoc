@@ -1,0 +1,79 @@
+= Set Rollout Split
+
+link:../README.adoc[← Index]
+
+Set a true/false percentage split on the *default* configuration of a Feature Flag in a specific environment.
+
+NOTE: This action only applies to the flag's `defaultValue` — the baseline rollout that applies when no condition rules match. Condition rules also support percentage splits, but configuring those is outside the scope of this action.
+
+The split defines what percentage of users receive `true` vs `false` as the flag value, and replaces any existing `defaultValue` on the flag.
+
+== Inputs
+
+[cols="2a,2a,2a,5a",options="header"]
+.Input details
+|===
+
+| Input name
+| Data type
+| Required?
+| Description
+
+| `api_token`
+| String
+| No
+| The Unify API token used to make the configuration change. If not defined, the action will use a secret named `FEATURE_FLAG_ACTIONS_API_TOKEN` or will error.
+
+| `app_id`
+| String
+| Yes
+| The Unify application ID with which the Feature Flag is associated.
+
+| `flag_id`
+| String
+| Yes
+| The Feature Flag UUID.
+
+| `env_id`
+| String
+| Yes
+| The Unify environment ID in which the rollout split is to be set.
+
+| `percent-true`
+| Integer
+| Yes
+| The percentage of users (0–100) that should receive the `true` flag value.
+
+| `percent-false`
+| Integer
+| No
+| The percentage of users (0–100) that should receive the `false` flag value. If not provided, or if `percent-true + percent-false` exceeds 100, this is calculated as `100 - percent-true`.
+
+|===
+
+See link:https://github.com/cloudbees-io/feature-flag-actions/tree/main#common-action-inputs[Common Action Inputs] for more details on the `api_token`, `app_id`, `flag_id`, and `env_id` inputs.
+
+== Usage
+
+The example below assumes the API token has been stored as a shared secret named `FEATURE_FLAG_ACTIONS_API_TOKEN`, so the `api_token` input is omitted.
+
+[source,yaml]
+----
+jobs:
+  build:
+    steps:
+
+      - id: set-campaign-flag-rollout-split
+        name: Set Campaign Feature Flag rollout split
+        uses: cloudbees-io/feature-flag-actions/set-rollout-split@v1
+        with:
+          app_id: "f5e23d42-5c3c-467d-91d7-b07158822589"
+          flag_id: "a5f246e5-7c7f-4c2a-9fe0-e05538b3d640"
+          env_id: "5be99972-9f87-4093-8189-c0c0a31dc571"
+          percent-true: 30
+          percent-false: 70
+----
+
+== See Also
+
+* link:../set-rollout-schedule[set-rollout-schedule] — Set a timed percentage rollout schedule on the default configuration of a Feature Flag
