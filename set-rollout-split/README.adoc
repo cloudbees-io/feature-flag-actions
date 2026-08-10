@@ -42,12 +42,7 @@ The split defines what percentage of users receive `true` vs `false` as the flag
 | `percent-true`
 | Integer
 | Yes
-| The percentage of users (0–100) that should receive the `true` flag value.
-
-| `percent-false`
-| Integer
-| No
-| The percentage of users (0–100) that should receive the `false` flag value. If not provided, or if `percent-true + percent-false` exceeds 100, this is calculated as `100 - percent-true`.
+| The percentage of users (0–100) that should receive the `true` flag value. The `false` percentage is automatically derived as `100 - percent-true`.
 
 |===
 
@@ -71,7 +66,6 @@ jobs:
           flag_id: "a5f246e5-7c7f-4c2a-9fe0-e05538b3d640"
           env_id: "5be99972-9f87-4093-8189-c0c0a31dc571"
           percent-true: 30
-          percent-false: 70
 ----
 
 == See Also

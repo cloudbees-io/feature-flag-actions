@@ -18,12 +18,8 @@ inputs:
     description: "The Unify Feature Flag ID"
     required: true
   percent-true:
-    description: "The percentage of users (0-100) that should receive the true flag value"
+    description: "The percentage of users (0-100) that should receive the true flag value. The false percentage is derived as 100 minus this value."
     required: true
-  percent-false:
-    description: "The percentage of users (0-100) that should receive the false flag value. If not provided, or if percent-true + percent-false exceeds 100, defaults to 100 minus percent-true."
-    required: false
-    default: ""
 
 runs:
   using: composite
@@ -33,7 +29,6 @@ runs:
       uses: docker://alpine:3
       env:
         PERCENT_TRUE: ${{ inputs.percent-true }}
-        PERCENT_FALSE: ${{ inputs.percent-false }}
       run: |
         set -eu
         apk add --no-cache jq >/dev/null 2>&1
@@ -44,17 +39,7 @@ runs:
           exit 1
         fi
 
-        # If percent-false was not provided, derive it from percent-true.
-        if [ -z "$PERCENT_FALSE" ]; then
-          PERCENT_FALSE=$(( 100 - PERCENT_TRUE ))
-        elif ! echo "$PERCENT_FALSE" | grep -qE '^[0-9]+$' || [ "$PERCENT_FALSE" -gt 100 ]; then
-          echo "Error: percent-false must be an integer between 0 and 100" >&2
-          exit 1
-        elif [ $(( PERCENT_TRUE + PERCENT_FALSE )) -gt 100 ]; then
-          # Combined percentage exceeds 100 — recalculate percent-false to complement percent-true.
-          echo "Warning: percent-true (${PERCENT_TRUE}) + percent-false (${PERCENT_FALSE}) exceeds 100. Ignoring percent-false and deriving it as $(( 100 - PERCENT_TRUE ))." >&2
-          PERCENT_FALSE=$(( 100 - PERCENT_TRUE ))
-        fi
+        PERCENT_FALSE=$(( 100 - PERCENT_TRUE ))
 
         # Build the defaultValue payload using jq so the numbers are typed
         # correctly as JSON integers rather than strings.
